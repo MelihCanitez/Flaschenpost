@@ -1,0 +1,57 @@
+>>> Server Error (500) <<<
+
+- Git, VSCode und Python 3.11.9 (statt 3.11) war bereits installiert
+- Mithilfe vom GitLab Link wurde das Repository geklont in VSCode
+
+VSC Terminal:
+- Zu /inverview navigieren
+- python3.11 -m venv .venv ausführen
+- Virtuelle Umgebung starten: .venv/Scripts/activate
+- Django installieren: pip install -r .\forklift_manager\requirements.txt
+
+VSCode Run and Debug: Debuggin starten
+
+-> Server Error (500) --> Lösung: Ein Update wurde nicht "migriert", also im Terminal "migrieren": python .\forklift_manager\manage.py migrate 
+
+>>> Funktionsumfang <<<
+Funktion testen: Man kann Personen hinzufügen, aber nicht entfernen (Laut der Aufgabenstellung ist das in Ordnung)
+Funktion testen: Man kann die FFZ als funktionstüchtig oder nicht funktionstüchtig anhaken -> Diese werden aber nicht gespeichert (Muss gemacht werden)
+Funktion testen: Man kann die Gelaufenen Stunden eintragen -> Diese werden aber nicht gespeichert (Muss gemacht werden)
+
+
+
+
+>>> Funktionstüchtigkeit fixen:
+- Ich inspecte das HTML Element und sehe, dass onChange die toggle_can_operate Funktion aufruft
+- Ich öffne folgende Dateien (die zusammenhängend sind) in VSCode: forklift_card.html, overview.html, urls.py, views.py und models.py(Die models ist optional (Ich habe mir nur den Forklift genauer angeguckt))
+
+Coding:
+>>> Funktionsfähig <<<
+- overview.html: Ich copy-paste den Inhalt von "toggle_operator()" in "toggle_can_operate()" und passe die Funktion an(Anpassung mithilfe der Struktur von forklift_card.html (z.B. die id Namen))
+- urls.py: eine weitere URL wird für die neue can_operate Funktion hinzugefügt
+- views.py: + neue Funktion (can_operate())
+	    + Es wird geprüft, ob der Post den Status der Checkbox als True oder False angibt und abhängig davon wird der can_operate Status vom Forklift verändert.
+
+>>> Gelaufene Stunden fixen:
+- Mit inspect Element prüfe ich die TextBoxen und merke, dass die Textfelder <input> eine Value haben, diese aber nicht angezeigt und geupdatet werden
+- In der Konsole wird angezeigt, dass diese nicht "geparsed" werden können -> Nach einer kurzen Recherche habe ich erfahren, dass es Probleme mit Komma und Punkt gibt -> Lösung "stringformat" nutzen um die Zahl als Gleitkommazahl zu formatieren
+- Nachdem die Zahl richtig angezeigt wird, setze ich den selben Prozess wie bei der Funktionstüchtigkeit um -> Funktion für den POST in overview.html, neue URL in urls.py und das Update in views.py
+
+
+
+
+>>> Erweiterung Teil 1 <<<
+- In der Models.py wurden 2 neue Modelle erstellt. Hierbei hat die Reparatur die id vom Forklift und vom Partner -> Reparatur wird mitgelöscht, damit eine Reparatur nicht ohne Partner oder Forklift existieren kann.
+- Unter der forklift Card wurde provisorisch ein Menü hinzugefügt für das Hinzufügen von Partnern und Reparaturen. 3 Partner wurden hinzugefügt und mit einem Tool für SQLite gecheckt. Beim Hinzufügen einer Reparatur wird auch eine Email in einer <textarea> generiert.
+- Es wurden URLs für POST und GET Befehle von Forklifts, Reparaturen und Partnern erstellt.
+
+
+
+>>> Erweiterung Teil 2 <<<
+- Einfach provisorisch dem Modell "Standort" ergänzt und migriert
+
+
+
+
+>>> Aufgabe 1: Harmonisches Familienfest <<<
+- Ich habe zum Lösen der Aufgabe ein Java Programm geschrieben "/A1/GeschenkeTausch.java" und das Ergebnis ist 3. Die 3. Person bekommt alle Geschenke

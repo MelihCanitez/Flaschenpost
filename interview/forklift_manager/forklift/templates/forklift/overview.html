@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Stapler-Übersicht{% endblock title %}
+
+{% block content %}
+    <h2>Stapler Übersicht</h2>
+    <div style="display: grid; gap: .5rem; grid-template-columns: repeat(5, 1fr);">
+        {% for f in forklifts %}
+            {% include 'forklift/forklift_card.html' %}
+        {% endfor %}
+    </div>
+    <h2>Partner hinzufügen</h2>
+    <div>
+        <label>Name:</label><input id="nameInput"></br>
+        <label>Email:</label><input id="emailInput"></br>
+    <button onclick="addPartner()">Partner Hinzufügen</button>
+    </div>
+
+    <h2>Reparatur</h2>
+    <div>
+        <label>Eintritt des Schadensfalles:</label><input id="eintrittInput"></br>
+        <label>Abgeschlossen:</label><input id="abgeschlossenInput"></br>
+        <label>Forklift:</label>
+        <select id="forkliftSelect">
+            <option value="">Bitte wählen...</option>
+        </select></br>
+        <label>Partner:</label>
+        <select id="partnerSelect">
+            <option value="">Bitte wählen...</option>
+        </select></br>
+    <button onclick="addReparatur()">Reparatur Hinzufügen</button>
+    </div>
+    <h2>Email Generator</h2>
+    <div>
+    <textarea id="outputEmail" value="" style="width: 700px; height: 150px;"></textarea>
+    </div>
+{% endblock content %}
+
+{% block script %}
+<script>
+    function fetchPartners() {
+        fetch('{% url "forklift:get_partners" %}')
+            .then(response => response.json())
+            .then(data => {
+                const partnerSelect = document.getElementById("partnerSelect");
+                // Optionen für jeden Partner hinzufügen
+                    data.forEach(partner => {
+                    const option = document.createElement("option");
+                    option.value = partner.pid;
+                    option.textContent = partner.name + " | " + partner.email;
+                    partnerSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Fehler beim Abrufen der Partner:', error));
+    }
+    // Wenn Dokument geladen, dann Select für Partner füllen
+    document.addEventListener('DOMContentLoaded', fetchPartners);
+
+    function fetchForklifts() {
+        fetch('{% url "forklift:get_forklifts" %}')
+            .then(response => response.json())
+            .then(data => {
+                const forkliftSelect = document.getElementById("forkliftSelect");
+                // Optionen für jeden Partner hinzufügen
+                    data.forEach(forklift => {
+                    const option = document.createElement("option");
+                    option.value = forklift.serial_no;
+                    option.textContent = forklift.brand + " " + forklift.serial_no;
+                    forkliftSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Fehler beim Abrufen der Forklift:', error));
+    }
+    // Wenn Dokument geladen, dann Select für Partner füllen
+    document.addEventListener('DOMContentLoaded', fetchForklifts);
+
+
+    function addReparatur() {
+        $.post({
+            url: '{% url "forklift:add_reparatur" %}',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            data: {
+                schadeneintritt: document.getElementById("eintrittInput").value,
+                fertigstellung: document.getElementById("abgeschlossenInput").value,
+                forkliftid: document.getElementById("forkliftSelect").value,
+                partnerid: document.getElementById("partnerSelect").value,
+            },
+        }).done(function (data) {
+            var selectedPartnerText = document.getElementById("partnerSelect").options[document.getElementById("partnerSelect").selectedIndex].text;
+            document.getElementById("outputEmail").value = "Sehr geehrtes Team der " + selectedPartnerText + "\n\nBERICHT\n\nMit freundlichen Grüßen\nDie Flaschenpost";
+        }).fail(function (data) {
+
+        }).always(function (data) {
+
+        })
+    }
+    
+    function addPartner() {
+        $.post({
+            url: '{% url "forklift:add_partner" %}',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            data: {
+                name: document.getElementById("nameInput").value,
+                email: document.getElementById("emailInput").value,
+            },
+        }).done(function (data) {
+            location.reload();
+        }).fail(function (data) {
+
+        }).always(function (data) {
+
+        })
+    }
+
+    function toggle_operator(operator_id, forklift_id) {
+        $.post({
+            url: '{% url "forklift:allow_operator" %}',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            data: {
+                operator_id: operator_id,
+                forklift_id: forklift_id,
+                allowed: $('#operator-' + operator_id + '-' + forklift_id).prop('checked'),
+            },
+        }).done(function (data) {
+            location.reload();
+        }).fail(function (data) {
+
+        }).always(function (data) {
+
+        })
+    }
+
+    function toggle_can_operate(forklift_id) {
+        // TODO Implement
+        $.post({
+            url: '{% url "forklift:can_operate" %}',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            data: {
+                forklift_id: forklift_id,
+                allowed: $('#can-operate-' + forklift_id).prop('checked'),
+            },
+        }).done(function (data) {
+            location.reload();
+        }).fail(function (data) {
+
+        }).always(function (data) {
+
+        })
+    }
+
+    function update_hours(value, forklift_id) {
+        $.post({
+            url: '{% url "forklift:update_hours" %}',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            data: {
+                forklift_id: forklift_id,
+                hours: value,
+            },
+        }).done(function (data) {
+            location.reload();
+        }).fail(function (data) {
+
+        }).always(function (data) {
+
+        })
+    }
+</script>
+{% endblock script %}
+    

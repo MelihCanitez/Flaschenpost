@@ -1,0 +1,42 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "GeschenkeTausch",
+            "request": "launch",
+            "mainClass": "GeschenkeTausch",
+            "projectName": "interview_140f3d0b"
+        },
+        {
+            "type": "java",
+            "name": "Aufgabe1",
+            "request": "launch",
+            "mainClass": "Aufgabe1",
+            "projectName": "interview_140f3d0b"
+        },
+        {
+            "type": "java",
+            "name": "Aufgabe1",
+            "request": "launch",
+            "mainClass": "A1.Aufgabe1",
+            "projectName": "interview_140f3d0b"
+        },
+        {
+            "name": "Python: Django",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\forklift_manager\\manage.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:8081"
+            ],
+            "django": true,
+            "justMyCode": true,
+            "console": "internalConsole"
+        }
+    ]
+}
